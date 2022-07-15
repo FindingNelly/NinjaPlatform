@@ -41,3 +41,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Backgrond
+    uniqueID: 2971965071
+    locked: 0
+  - name: Platform
+    uniqueID: 3766714137
+    locked: 0
+  - name: Things
+    uniqueID: 468462115
+    locked: 0
+  - name: Player
+    uniqueID: 477454189
+    locked: 0
