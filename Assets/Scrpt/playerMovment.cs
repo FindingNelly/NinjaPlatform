@@ -23,8 +23,21 @@ public class playerMovment : MonoBehaviour
     }
     void OnMove(InputValue value)
     {
-        moveInput=value.Get<Vector2>();
+        moveInput = value.Get<Vector2>();
         Run();
+        IsPlayerMoving();
+        
+     
+    }
+
+    void IsPlayerMoving()
+    {
+        if (Mathf.Abs(myRigidbody.velocity.x) >Mathf.Epsilon)
+        {
+            transform.localScale = new Vector2(Mathf.Sign(myRigidbody.velocity.x), 1f);
+        }
+        
+
     }
     void Run()
     {
