@@ -6,36 +6,48 @@ using UnityEngine.InputSystem;
 public class playerMovment : MonoBehaviour
 {
     Rigidbody2D myRigidbody;
-    [SerializeField]float playerSpeed = 10;
+    Animator myAnimation;
+
+    [Header("Player movment")]
+    [SerializeField] float playerSpeed = 10;
     
+
 
     Vector2 moveInput;
     
     void Start()
     {
-       myRigidbody = GetComponent<Rigidbody2D>();
+        myAnimation = GetComponent<Animator>();
+        myRigidbody = GetComponent<Rigidbody2D>();
     }
 
     
     void Update()
     {
         
+        Run();
+        FlipSprite();
+        
+    }
+
+    private bool isPlayerRunning()
+    {
+        return Mathf.Abs(myRigidbody.velocity.x) > Mathf.Epsilon;
     }
     void OnMove(InputValue value)
     {
         moveInput = value.Get<Vector2>();
-        Run();
-        IsPlayerMoving();
-        
-     
     }
 
-    void IsPlayerMoving()
+    void FlipSprite()
     {
-        if (Mathf.Abs(myRigidbody.velocity.x) >Mathf.Epsilon)
+        if  (isPlayerRunning())
         {
             transform.localScale = new Vector2(Mathf.Sign(myRigidbody.velocity.x), 1f);
+         
         }
+        
+      
         
 
     }
@@ -43,6 +55,8 @@ public class playerMovment : MonoBehaviour
     {
         Vector2 playerVelocity= new Vector2(moveInput.x*playerSpeed, myRigidbody.velocity.y);
         myRigidbody.velocity = playerVelocity;
+        
+        myAnimation.SetBool("isRunning",isPlayerRunning());
     }
     
      
