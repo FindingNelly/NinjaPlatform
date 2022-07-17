@@ -9,8 +9,10 @@ public class playerMovment : MonoBehaviour
     Animator myAnimation;
 
     [Header("Player movment")]
-    [SerializeField] float playerSpeed = 10;
-    
+    [SerializeField] float playerSpeed = 7.5f;
+    [SerializeField] float jumpSpeed = 22f;
+
+
 
 
     Vector2 moveInput;
@@ -38,6 +40,13 @@ public class playerMovment : MonoBehaviour
     {
         moveInput = value.Get<Vector2>();
     }
+    void OnJump(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            myRigidbody.velocity = new Vector2(1f, jumpSpeed);
+        }
+    }
 
     void FlipSprite()
     {
@@ -46,10 +55,6 @@ public class playerMovment : MonoBehaviour
             transform.localScale = new Vector2(Mathf.Sign(myRigidbody.velocity.x), 1f);
          
         }
-        
-      
-        
-
     }
     void Run()
     {
