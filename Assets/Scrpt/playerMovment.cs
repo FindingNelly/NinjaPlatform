@@ -47,6 +47,11 @@ public class playerMovment : MonoBehaviour
         return Mathf.Abs(myRigidbody.velocity.x) > Mathf.Epsilon;
     }
 
+    bool isPlayerClimbing()
+    {
+        return Mathf.Abs(myRigidbody.velocity.y) > Mathf.Epsilon;
+    }
+
     bool isPlayerOnGround()
     {
         return myCapsuleCollider.IsTouchingLayers(LayerMask.GetMask("Ground"));
@@ -116,19 +121,33 @@ public class playerMovment : MonoBehaviour
 
     void isClimbing()
     {
+       
         if (isPlayerInLadder())
         {
             playerVelocity=new Vector2(myRigidbody.velocity.x,moveInput.y*climbSpeed);
             myRigidbody.velocity=playerVelocity;
-
+            
             myAnimatior.SetBool("isJumping", false);
 
             myRigidbody.gravityScale = 0;
+            myAnimatior.SetBool("isClimbing", isPlayerClimbing());
+            
+
         }
         else
         {
             myRigidbody.gravityScale = normalPlayerGravity;
+            
         }
+        if (isPlayerClimbing())
+        {
+            
+        }
+        else
+        {
+            
+        }
+        
     }
     
      
