@@ -18,6 +18,7 @@ public class playerMovment : MonoBehaviour
     //variables
     Vector2 moveInput;
     Vector2 playerVelocity;
+    float normalPlayerGravity;
 
 
     void Start()
@@ -26,7 +27,8 @@ public class playerMovment : MonoBehaviour
         myCapsuleCollider = GetComponent<CapsuleCollider2D>();
         myAnimatior = GetComponent<Animator>();
         myRigidbody = GetComponent<Rigidbody2D>();
-        Debug.Log(LayerMask.GetMask("Ladder"));
+
+        normalPlayerGravity = myRigidbody.gravityScale;
     }
 
     
@@ -63,13 +65,7 @@ public class playerMovment : MonoBehaviour
         if (isPlayerOnGround() && value.isPressed)
         {
             myRigidbody.velocity = new Vector2(1f, jumpSpeed);
-
-            myAnimatior.SetBool("isRunning", false);
-            myAnimatior.SetBool("isJumping", true);
-
-        }
-       
-       
+        }         
     }
 
     void OnMove(InputValue value)
@@ -77,14 +73,18 @@ public class playerMovment : MonoBehaviour
         moveInput = value.Get<Vector2>();
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        myAnimatior.SetBool("isJumping", false);
-
-    }
 
 
     //other methots
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        //jumping animation off when thoughing ground layer
+
+        myAnimatior.SetBool("isJumping", false);
+    }
+
+
     void FlipSprite()
     {
         if  (isPlayerRunning())
@@ -92,6 +92,8 @@ public class playerMovment : MonoBehaviour
             transform.localScale = new Vector2(Mathf.Sign(myRigidbody.velocity.x), 1f);
         }
     }
+
+
     void Run()
     {
         playerVelocity= new Vector2(moveInput.x*runSpeed, myRigidbody.velocity.y);
@@ -100,14 +102,17 @@ public class playerMovment : MonoBehaviour
         myAnimatior.SetBool("isRunning",isPlayerRunning());
 
     }
+
+
     void isJumping()
     {
         if (!isPlayerOnGround())
         {
             myAnimatior.SetBool("isRunning", false);
-           
+            myAnimatior.SetBool("isJumping", true);
         }
     }
+
 
     void isClimbing()
     {
@@ -115,6 +120,14 @@ public class playerMovment : MonoBehaviour
         {
             playerVelocity=new Vector2(myRigidbody.velocity.x,moveInput.y*climbSpeed);
             myRigidbody.velocity=playerVelocity;
+
+            myAnimatior.SetBool("isJumping", false);
+
+            myRigidbody.gravityScale = 0;
+        }
+        else
+        {
+            myRigidbody.gravityScale = normalPlayerGravity;
         }
     }
     
