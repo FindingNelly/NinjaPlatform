@@ -11,18 +11,22 @@ public class playerMovment : MonoBehaviour
 
     //inspector
     [Header("Player movment")]
-    [SerializeField] float playerSpeed = 7.5f;
+    [SerializeField] float runSpeed = 7.5f;
     [SerializeField] float jumpSpeed = 22f;
-   
+    [SerializeField] float climbSpeed = 7.5f;
+
     //variables
     Vector2 moveInput;
-    
+    Vector2 playerVelocity;
+
+
     void Start()
     {
         //catching ref
         myCapsuleCollider = GetComponent<CapsuleCollider2D>();
         myAnimatior = GetComponent<Animator>();
         myRigidbody = GetComponent<Rigidbody2D>();
+        Debug.Log(LayerMask.GetMask("Ladder"));
     }
 
     
@@ -31,6 +35,8 @@ public class playerMovment : MonoBehaviour
         Run();
         FlipSprite();
         isJumping();
+        isClimbing();
+       
     }
     
     //bools
@@ -44,8 +50,12 @@ public class playerMovment : MonoBehaviour
         return myCapsuleCollider.IsTouchingLayers(LayerMask.GetMask("Ground"));
     }
 
+    bool isPlayerInLadder()
+    {
+        return myCapsuleCollider.IsTouchingLayers(LayerMask.GetMask("Ladder"));
+    }
 
-   
+
     //from inputmanger methots
 
     void OnJump(InputValue value)
@@ -53,11 +63,12 @@ public class playerMovment : MonoBehaviour
         if (isPlayerOnGround() && value.isPressed)
         {
             myRigidbody.velocity = new Vector2(1f, jumpSpeed);
-            myAnimatior.SetBool("isRunning", false);
 
+            myAnimatior.SetBool("isRunning", false);
             myAnimatior.SetBool("isJumping", true);
 
         }
+       
        
     }
 
@@ -71,6 +82,8 @@ public class playerMovment : MonoBehaviour
         myAnimatior.SetBool("isJumping", false);
 
     }
+
+
     //other methots
     void FlipSprite()
     {
@@ -81,7 +94,7 @@ public class playerMovment : MonoBehaviour
     }
     void Run()
     {
-        Vector2 playerVelocity= new Vector2(moveInput.x*playerSpeed, myRigidbody.velocity.y);
+        playerVelocity= new Vector2(moveInput.x*runSpeed, myRigidbody.velocity.y);
         myRigidbody.velocity = playerVelocity;
         
         myAnimatior.SetBool("isRunning",isPlayerRunning());
@@ -89,11 +102,20 @@ public class playerMovment : MonoBehaviour
     }
     void isJumping()
     {
-        if (!myCapsuleCollider.IsTouchingLayers(LayerMask.GetMask("Ground")))
+        if (!isPlayerOnGround())
         {
-            
+            myAnimatior.SetBool("isRunning", false);
+           
         }
-        
+    }
+
+    void isClimbing()
+    {
+        if (isPlayerInLadder())
+        {
+            playerVelocity=new Vector2(myRigidbody.velocity.x,moveInput.y*climbSpeed);
+            myRigidbody.velocity=playerVelocity;
+        }
     }
     
      
