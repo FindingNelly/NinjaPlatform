@@ -8,17 +8,20 @@ public class playerMovment : MonoBehaviour
     Rigidbody2D myRigidbody;
     Animator myAnimatior;
     CapsuleCollider2D myCapsuleCollider;
+    SpriteRenderer mySpriteRenderer;
 
     //inspector
     [Header("Player movment")]
     [SerializeField] float runSpeed = 7.5f;
     [SerializeField] float jumpSpeed = 22f;
     [SerializeField] float climbSpeed = 7.5f;
+    [SerializeField] float climbingspeed=1;
 
     //variables
     Vector2 moveInput;
     Vector2 playerVelocity;
     float normalPlayerGravity;
+    
 
 
     void Start()
@@ -27,6 +30,7 @@ public class playerMovment : MonoBehaviour
         myCapsuleCollider = GetComponent<CapsuleCollider2D>();
         myAnimatior = GetComponent<Animator>();
         myRigidbody = GetComponent<Rigidbody2D>();
+        mySpriteRenderer = GetComponent<SpriteRenderer>();
 
         normalPlayerGravity = myRigidbody.gravityScale;
     }
@@ -124,29 +128,34 @@ public class playerMovment : MonoBehaviour
        
         if (isPlayerInLadder())
         {
-            playerVelocity=new Vector2(myRigidbody.velocity.x,moveInput.y*climbSpeed);
+            myAnimatior.SetBool("isClimbing", true);
+            if (isPlayerClimbing())
+            {
+                myAnimatior.SetFloat("climbingSpeed", climbingspeed);
+                
+                
+            }
+            if (!isPlayerClimbing())
+            {
+                myAnimatior.SetFloat("climbingSpeed", 0f);
+            }
+            
+            playerVelocity =new Vector2(myRigidbody.velocity.x,moveInput.y*climbSpeed);
             myRigidbody.velocity=playerVelocity;
             
             myAnimatior.SetBool("isJumping", false);
-
+            
             myRigidbody.gravityScale = 0;
-            myAnimatior.SetBool("isClimbing", isPlayerClimbing());
+            
             
 
         }
         else
         {
             myRigidbody.gravityScale = normalPlayerGravity;
-            
+            myAnimatior.SetBool("isClimbing", false );
         }
-        if (isPlayerClimbing())
-        {
-            
-        }
-        else
-        {
-            
-        }
+        
         
     }
     
